@@ -23,7 +23,7 @@ const About = () => {
                     <Grid item xs={12} md={6}>
                         <Box
                             component="img"
-                            src="/public/greekgrill.jpg" // Adjust the path as needed
+                            src="/greekgrill.jpg" // Adjust the path as needed
                             alt="Delicious Greek Dish"
                             sx={{
                                 maxWidth: '100%',

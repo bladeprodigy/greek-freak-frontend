@@ -4,7 +4,7 @@ const Home = () => {
     return (
         <Box
             sx={{
-                backgroundImage: 'url(public/giannis1.jpg)',
+                backgroundImage: 'url(/giannis1.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center',
                 height: '100vh',
