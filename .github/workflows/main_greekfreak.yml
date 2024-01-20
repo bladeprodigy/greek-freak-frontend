@@ -25,9 +25,9 @@ jobs:
       - name: Build the project
         run: npm run build --if-present
 
-      - name: Zip the contents of the build directory
+      - name: Zip the contents of the output directory
         run: |
-          cd build
+          cd dist
           zip -r ../build.zip *
 
       - name: Upload build artifact
