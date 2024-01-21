@@ -57,11 +57,15 @@ const RegisterAndLogin = (): React.ReactElement => {
                 }),
             });
 
-            const data = await response.json();
             if (response.ok) {
+                const data = await response.json();
                 localStorage.setItem('jwtToken', data.token);
                 navigate('#home');
             } else {
+                if (response.headers.get('content-type')?.includes('application/json')) {
+                    const errorData = await response.json();
+                    console.error('Login failed:', errorData);
+                }
                 setLoginError('Invalid email or password.');
             }
         } catch (error) {
@@ -69,6 +73,7 @@ const RegisterAndLogin = (): React.ReactElement => {
             setLoginError('An error occurred while trying to log in.');
         }
     };
+
 
     const handleRegisterSubmit = async (): Promise<void> => {
         setRegisterErrors({});
@@ -93,18 +98,25 @@ const RegisterAndLogin = (): React.ReactElement => {
                 }),
             });
 
-            const data = await response.json();
-            if (response.ok) {
+            if (!response.ok) {
+                if (response.headers.get('content-type')?.includes('application/json')) {
+                    const errorData = await response.json();
+                    // Handle JSON error message here, if any
+                    setRegisterErrors(errorData.errors || {});
+                } else {
+                    setRegisterErrors({ general: ["An error occurred during registration."] });
+                }
+            } else {
+                const data = await response.json();
                 console.log('Registration successful:', data);
                 navigate('#login');
-            } else {
-                setRegisterErrors(data.errors || {});
             }
         } catch (error) {
             console.error('Registration error:', error);
             setRegisterErrors({ general: ["An error occurred during registration."] });
         }
     };
+
 
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
