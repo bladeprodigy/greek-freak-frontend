@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
-import {Box, Tab, Tabs, TextField, Button, Container, Grid, Paper} from '@mui/material';
+import { Box, Tab, Tabs, TextField, Button, Container, Grid, Paper } from '@mui/material';
 import { TabContext, TabPanel } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
 
 interface FormField {
     email: string;
@@ -22,27 +23,87 @@ const RegisterAndLogin = (): React.ReactElement => {
         password: '',
         confirmPassword: '',
     });
+    const [registerErrors, setRegisterErrors] = useState<Record<string, string[]>>({});
+    const [loginError, setLoginError] = useState('');
+
+    const navigate = useNavigate();
 
     const handleTabChange = (_: ChangeEvent<unknown>, newValue: string): void => {
         setValue(newValue);
+        setRegisterErrors({});
+        setLoginError('');
     };
 
     const handleLoginChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setLoginFields({ ...loginFields, [event.target.name]: event.target.value });
+        setLoginError('');
     };
 
     const handleRegisterChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setRegisterFields({ ...registerFields, [event.target.name]: event.target.value });
+        setRegisterErrors({});
     };
 
-    const handleLoginSubmit = (): void => {
-        console.log('Login Info:', loginFields);
-        // Implement your login logic here
+    const handleLoginSubmit = async (): Promise<void> => {
+        try {
+            const response = await fetch('https://greekfreak.azurewebsites.net/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: loginFields.email,
+                    password: loginFields.password,
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('jwtToken', data.token);
+                navigate('#home');
+            } else {
+                setLoginError('Invalid email or password.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            setLoginError('An error occurred while trying to log in.');
+        }
     };
 
-    const handleRegisterSubmit = (): void => {
-        console.log('Register Info:', registerFields);
-        // Implement your registration logic here
+    const handleRegisterSubmit = async (): Promise<void> => {
+        setRegisterErrors({});
+
+        if (registerFields.password !== registerFields.confirmPassword) {
+            setRegisterErrors({ confirmPassword: ["Passwords do not match"] });
+            return;
+        }
+
+        try {
+            const response = await fetch('https://greekfreak.azurewebsites.net/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: registerFields.firstName,
+                    lastName: registerFields.lastName,
+                    email: registerFields.email,
+                    phoneNumber: registerFields.phoneNumber,
+                    password: registerFields.password,
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Registration successful:', data);
+                navigate('#login');
+            } else {
+                setRegisterErrors(data.errors || {});
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            setRegisterErrors({ general: ["An error occurred during registration."] });
+        }
     };
 
     return (
@@ -54,109 +115,137 @@ const RegisterAndLogin = (): React.ReactElement => {
                             <Tab label="Login" value="1" />
                             <Tab label="Register" value="2" />
                         </Tabs>
-                </Box>
+                    </Box>
                     <TabPanel value="1" sx={{ pt: 2 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Email"
-                                variant="outlined"
-                                fullWidth
-                                name="email"
-                                value={loginFields.email}
-                                onChange={handleLoginChange}
-                            />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Email"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="email"
+                                    value={loginFields.email}
+                                    onChange={handleLoginChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Password"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="password"
+                                    type="password"
+                                    value={loginFields.password}
+                                    onChange={handleLoginChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="primary" fullWidth onClick={handleLoginSubmit}>
+                                    Login
+                                </Button>
+                            </Grid>
+                            {loginError && (
+                                <Grid item xs={12}>
+                                    <Box color="error.main">{loginError}</Box>
+                                </Grid>
+                            )}
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Password"
-                                variant="outlined"
-                                fullWidth
-                                name="password"
-                                type="password"
-                                value={loginFields.password}
-                                onChange={handleLoginChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button variant="contained" color="primary" fullWidth onClick={handleLoginSubmit}>
-                                Login
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </TabPanel>
+                    </TabPanel>
                     <TabPanel value="2" sx={{ pt: 2 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label="First Name"
-                                variant="outlined"
-                                fullWidth
-                                name="firstName"
-                                value={registerFields.firstName}
-                                onChange={handleRegisterChange}
-                            />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="First Name"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="firstName"
+                                    value={registerFields.firstName}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.firstName?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Last Name"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="lastName"
+                                    value={registerFields.lastName}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.lastName?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Email"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="email"
+                                    value={registerFields.email}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.Email?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Phone Number"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="phoneNumber"
+                                    value={registerFields.phoneNumber}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.PhoneNumber?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Password"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="password"
+                                    type="password"
+                                    value={registerFields.password}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.Password?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Confirm Password"
+                                    variant="outlined"
+                                    fullWidth
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={registerFields.confirmPassword}
+                                    onChange={handleRegisterChange}
+                                />
+                                {registerErrors.ConfirmPassword?.map((error, index) => (
+                                    <Box key={index} color="error.main">{error}</Box>
+                                ))}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="primary" fullWidth onClick={handleRegisterSubmit}>
+                                    Register
+                                </Button>
+                            </Grid>
+                            {registerErrors.general?.map((error, index) => (
+                                <Grid item xs={12} key={`general-${index}`}>
+                                    <Box color="error.main">{error}</Box>
+                                </Grid>
+                            ))}
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label="Last Name"
-                                variant="outlined"
-                                fullWidth
-                                name="lastName"
-                                value={registerFields.lastName}
-                                onChange={handleRegisterChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Email"
-                                variant="outlined"
-                                fullWidth
-                                name="email"
-                                value={registerFields.email}
-                                onChange={handleRegisterChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Phone Number"
-                                variant="outlined"
-                                fullWidth
-                                name="phoneNumber"
-                                value={registerFields.phoneNumber}
-                                onChange={handleRegisterChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Password"
-                                variant="outlined"
-                                fullWidth
-                                name="password"
-                                type="password"
-                                value={registerFields.password}
-                                onChange={handleRegisterChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Confirm Password"
-                                variant="outlined"
-                                fullWidth
-                                name="confirmPassword"
-                                type="password"
-                                value={registerFields.confirmPassword}
-                                onChange={handleRegisterChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button variant="contained" color="primary" fullWidth onClick={handleRegisterSubmit}>
-                                Register
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </TabPanel>
-            </TabContext>
+                    </TabPanel>
+                </TabContext>
             </Paper>
         </Container>
     );

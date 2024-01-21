@@ -3,10 +3,10 @@ import { Box, Container, Grid, Typography } from "@mui/material";
 const About = () => {
     return (
         <Box sx={{
-            bgcolor: 'white', // or use a color that matches the theme above
-            py: 4, // adds padding on the top and bottom
+            bgcolor: 'white',
+            py: 4,
         }}>
-            <Container maxWidth="lg"> {/* Adjust maxWidth to control the content width */}
+            <Container maxWidth="lg">
                 <Grid container spacing={4} alignItems="center">
                     <Grid item xs={12} md={6}>
                         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold',fontFamily: '"GFS Neohellenic", serif', color: '#0D5EAF' }}>
@@ -23,13 +23,13 @@ const About = () => {
                     <Grid item xs={12} md={6}>
                         <Box
                             component="img"
-                            src="/public/greekgrill.jpg" // Adjust the path as needed
+                            src="/greekgrill.jpg"
                             alt="Delicious Greek Dish"
                             sx={{
                                 maxWidth: '100%',
                                 height: 'auto',
-                                borderRadius: 2, // Adjust as needed
-                                boxShadow: 3, // Optional shadow for depth
+                                borderRadius: 2,
+                                boxShadow: 3,
                             }}
                         />
                     </Grid>

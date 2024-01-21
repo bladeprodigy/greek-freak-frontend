@@ -8,13 +8,21 @@ import Footer from "../components/Footer.tsx";
 
 const MainPage = () => {
     return (
-        <Box sx={{ width: '100vw'}}> {/* Add overflow hidden to prevent horizontal scroll */}
+        <Box sx={{ width: '100vw'}}>
             <Navbar />
-            <Home />
-            <About />
-            <Menu />
-            <RegisterAndLogin />
-            <Footer />
+            <section id="home">
+                <Home/>
+            </section>
+            <section id="about">
+                <About/>
+            </section>
+            <section id="menu">
+                <Menu/>
+            </section>
+            <section id="login">
+                <RegisterAndLogin/>
+            </section>
+            <Footer/>
         </Box>
     );
 };
