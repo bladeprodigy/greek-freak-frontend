@@ -145,7 +145,7 @@ const MyReservations = (): React.ReactElement => {
                                 <Typography variant="h6" gutterBottom>Available Sitting</Typography>
                                 <Typography variant="body1">{`Capacity: ${sitting.capacity}`}</Typography>
                                 <Typography variant="body1">{`Is Outside: ${sitting.isOutside ? 'Yes' : 'No'}`}</Typography>
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => createReservation('2024-01-22T00:50:24.630Z', 0, sitting.id)}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => createReservation(reservationTime, numberOfGuests, sitting.id)}>
                                     Select Sitting
                                 </Button>
                             </CardContent>
