@@ -71,14 +71,27 @@ const MyReservations = (): React.ReactElement => {
             return;
         }
 
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            console.error('No token found.');
+            return;
+        }
+
         await fetch('https://greek-freak-restaurant.azurewebsites.net/reservations', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ selectedSittingId, reservationTime, numberOfGuests }),
         });
 
         // Fetch reservations again to update the list
-        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations')
+        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(response => response.json())
             .then(data => setReservations(data));
     };
@@ -104,8 +117,9 @@ const MyReservations = (): React.ReactElement => {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="md">
             <MyReservationsNavbar />
+            <Box mt={4}>
             <Grid container spacing={2} sx={{ mb: 2 }}>
                 <Grid item xs={12} md={6}>
                     <TextField
@@ -180,6 +194,7 @@ const MyReservations = (): React.ReactElement => {
                     )}
                 </Box>
             </Modal>
+            </Box>
         </Container>
     );
 };
