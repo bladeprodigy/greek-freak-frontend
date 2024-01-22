@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import {Box, Button, Card, CardContent, Container, Grid, Modal, TextField, Typography} from '@mui/material';
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Container,
+    Grid,
+    Modal,
+    TextField,
+    Typography
+} from '@mui/material';
 import MyReservationsNavbar from "../components/MyReservationsNavbar.tsx";
 
 interface Reservation {
-    id: string;
-    date: string;
-    time: string;
+    reservationId: number;
+    sittingId: number;
+    reservationTime: string;
     numberOfGuests: number;
 }
 
@@ -153,33 +164,49 @@ const MyReservations = (): React.ReactElement => {
                     </Grid>
                 ))}
             </Grid>
-            {reservations.length > 0 ? (
-                reservations.map((reservation) => (
-                    <Box key={reservation.id} sx={{ mb: 2 }}>
-                        <Button onClick={() => fetchReservationDetails(reservation.id)}>
-                            <Typography variant="h6">{`Reservation Date: ${reservation.date}`}</Typography>
-                            <Typography variant="body1">{`Reservation Time: ${reservation.time}`}</Typography>
-                            <Typography variant="body1">{`Number of Guests: ${reservation.numberOfGuests}`}</Typography>
-                        </Button>
+                {reservations.length > 0 ? (
+                    reservations.map((reservation) => (
+                        <Grid item xs={12} md={6} key={reservation.reservationId}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography variant="h6" gutterBottom>Reservation ID: {reservation.reservationId}</Typography>
+                                    <Typography variant="body1">Sitting ID: {reservation.sittingId}</Typography>
+                                    <Typography variant="body1">Reservation Time: {new Date(reservation.reservationTime).toLocaleString()}</Typography>
+                                    <Typography variant="body1">Number of Guests: {reservation.numberOfGuests}</Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button variant="contained" color="primary" onClick={() => fetchReservationDetails(reservation.reservationId.toString())}>
+                                        View Details
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))
+                ) : (
+                    <Typography variant="body1">No reservations found.</Typography>
+                )}
+                <Modal open={selectedReservation !== null} onClose={() => setSelectedReservation(null)}>
+                    <Box sx={{ width: '80%', bgcolor: 'background.paper', p: 2, my: 'auto', mx: 'auto', mt: 10 }}>
+                        {selectedReservation && (
+                            <Card>
+                                <CardContent>
+                                    <Typography variant="h5" gutterBottom>
+                                        Reservation Details
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        Reservation Time: {new Date(selectedReservation.reservationTime).toLocaleString()}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        Number of Guests: {selectedReservation.numberOfGuests}
+                                    </Typography>
+                                    <Button variant="contained" color="secondary" onClick={() => deleteReservation(selectedReservation.reservationId.toString())}>
+                                        Delete Reservation
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        )}
                     </Box>
-                ))
-            ) : (
-                <Typography variant="body1">No reservations found.</Typography>
-            )}
-            <Modal open={selectedReservation !== null} onClose={() => setSelectedReservation(null)}>
-                <Box sx={{ p: 4, bgcolor: 'white' }}>
-                    {selectedReservation && (
-                        <>
-                            <Typography variant="h6">{`Reservation Date: ${selectedReservation.date}`}</Typography>
-                            <Typography variant="body1">{`Reservation Time: ${selectedReservation.time}`}</Typography>
-                            <Typography variant="body1">{`Number of Guests: ${selectedReservation.numberOfGuests}`}</Typography>
-                            <Button variant="contained" color="secondary" onClick={() => deleteReservation(selectedReservation.id)}>
-                                Delete Reservation
-                            </Button>
-                        </>
-                    )}
-                </Box>
-            </Modal>
+                </Modal>
             </Box>
         </Container>
     );
