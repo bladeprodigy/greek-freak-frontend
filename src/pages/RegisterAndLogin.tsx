@@ -54,7 +54,7 @@ const RegisterAndLogin = (): React.ReactElement => {
         }
 
         try {
-            const response = await fetch('https://greekfreak.azurewebsites.net/login', {
+            const response = await fetch('https://greek-freak-restaurant.azurewebsites.net/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -89,7 +89,7 @@ const RegisterAndLogin = (): React.ReactElement => {
         }
 
         try {
-            const response = await fetch('https://greekfreak.azurewebsites.net/register', {
+            const response = await fetch('https://greek-freak-restaurant.azurewebsites.net/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ firstName, lastName, email, phoneNumber, password }),
@@ -102,7 +102,7 @@ const RegisterAndLogin = (): React.ReactElement => {
 
             const data = await response.json();
             console.log('Registration successful:', data);
-            navigate('#login');
+            navigate('/login');
         } catch (error) {
             console.error('Registration error:', error);
             setRegisterErrors({ general: ["An error occurred during registration."] });

@@ -3,7 +3,6 @@ import Home from "../components/Home.tsx";
 import {Box} from "@mui/material";
 import About from "../components/About.tsx";
 import Menu from "../components/Menu.tsx";
-import RegisterAndLogin from "../components/RegisterAndLogin.tsx";
 import Footer from "../components/Footer.tsx";
 
 const MainPage = () => {
@@ -18,9 +17,6 @@ const MainPage = () => {
             </section>
             <section id="menu">
                 <Menu/>
-            </section>
-            <section id="login">
-                <RegisterAndLogin/>
             </section>
             <Footer/>
         </Box>

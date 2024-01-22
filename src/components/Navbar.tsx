@@ -30,7 +30,7 @@ const Navbar = () => {
                         <Button color="inherit" href="#home">Home</Button>
                         <Button color="inherit" href="#about">About Us</Button>
                         <Button color="inherit" href="#menu">Menu</Button>
-                        <Button color="inherit" href="#login">Login/Register</Button>
+                        <Button color="inherit" href="/login">Login/Register</Button>
                     </Box>
                 </Toolbar>
             </AppBar>

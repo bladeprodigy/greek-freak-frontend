@@ -1,8 +1,10 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
 import MainPage from './pages/MainPage';
 import MyReservations from './pages/MyReservations';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import PrivateRoute from './components/PrivateRoute';
+import RegisterAndLogin from './pages/RegisterAndLogin';
 
 const App = () => {
     return (
@@ -10,7 +12,12 @@ const App = () => {
             <CssBaseline />
             <BrowserRouter>
                 <Routes>
-                    <Route path="/my-reservations" element={<MyReservations />} />
+                    <Route path="/my-reservations" element={
+                        <PrivateRoute>
+                            <MyReservations />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/login" element={<RegisterAndLogin />} />
                     <Route path="/" element={<MainPage />} />
                 </Routes>
             </BrowserRouter>
