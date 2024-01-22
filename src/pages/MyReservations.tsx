@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Box, Button, Container, Modal, Typography} from '@mui/material';
+import MyReservationsNavbar from "../components/MyReservationsNavbar.tsx";
 
 interface Reservation {
     id: string;
@@ -21,9 +22,25 @@ const MyReservations = (): React.ReactElement => {
     const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
     useEffect(() => {
-        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations')
-            .then(response => response.json())
-            .then(data => setReservations(data));
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            console.error('No token found.');
+            return;
+        }
+
+        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reservations.');
+                }
+                return response.json();
+            })
+            .then(data => setReservations(data))
+            .catch(error => console.error('Fetch error:', error));
     }, []);
 
     const fetchAvailableSittings = async (reservationTime: string, numberOfGuests: number) => {
@@ -77,6 +94,7 @@ const MyReservations = (): React.ReactElement => {
 
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+            <MyReservationsNavbar />
             <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={() => fetchAvailableSittings('2024-01-24T13:39:50.392Z', 3)}>
                 Create Reservation
             </Button>
