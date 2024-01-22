@@ -10,7 +10,7 @@ interface Reservation {
 }
 
 interface Sitting {
-    id: number;
+    sittingId: number;
     capacity: number;
     isOutside: boolean;
 }
@@ -139,13 +139,13 @@ const MyReservations = (): React.ReactElement => {
             </Button>
             <Grid container spacing={2}>
                 {availableSittings.map((sitting) => (
-                    <Grid item xs={12} md={6} key={sitting.id}>
+                    <Grid item xs={12} md={6} key={sitting.sittingId}>
                         <Card>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>Available Sitting</Typography>
                                 <Typography variant="body1">{`Capacity: ${sitting.capacity}`}</Typography>
                                 <Typography variant="body1">{`Is Outside: ${sitting.isOutside ? 'Yes' : 'No'}`}</Typography>
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => createReservation(reservationTime, numberOfGuests, sitting.id)}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => createReservation(reservationTime, numberOfGuests, sitting.sittingId)}>
                                     Select Sitting
                                 </Button>
                             </CardContent>
