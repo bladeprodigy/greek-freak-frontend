@@ -61,12 +61,13 @@ const RegisterAndLogin = (): React.ReactElement => {
             });
 
             if (!response.ok) {
-                new Error('Invalid email or password.');
+                const errorText = await response.text();
+                new Error(errorText || response.statusText);
             }
 
             const data = await response.json();
             localStorage.setItem('jwtToken', data.token);
-            navigate('/my-reservations'); // Redirect to my-reservations page after successful login
+            navigate('/my-reservations');
         } catch (error) {
             console.error('Login error:', error);
             setLoginError('An error occurred while trying to log in.');
@@ -95,7 +96,8 @@ const RegisterAndLogin = (): React.ReactElement => {
             });
 
             if (!response.ok) {
-                new Error('An error occurred during registration.');
+                const errorText = await response.text();
+                new Error(errorText || response.statusText);
             }
 
             const data = await response.json();
