@@ -39,14 +39,13 @@ const Navbar = () => {
                 open={drawerOpen}
                 onClose={handleDrawerToggle}
                 ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
+                    keepMounted: true,
                 }}
                 sx={{
                     display: { xs: 'block', sm: 'none' },
                     '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
                 }}
             >
-                {/* Drawer items */}
                 <Button color="inherit" href="#home">Home</Button>
                 <Button color="inherit" href="#about">About Us</Button>
                 <Button color="inherit" href="#menu">Menu</Button>

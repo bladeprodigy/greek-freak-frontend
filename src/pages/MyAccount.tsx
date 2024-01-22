@@ -44,7 +44,7 @@ const MyAccount = (): React.ReactElement => {
         }
 
         await fetch('https://greek-freak-restaurant.azurewebsites.net/my-account/update', {
-            method: 'PUT', // Change this line
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -52,7 +52,6 @@ const MyAccount = (): React.ReactElement => {
             body: JSON.stringify(accountFields),
         });
 
-        // Fetch account details again to update the form
         fetch('https://greek-freak-restaurant.azurewebsites.net/my-account', {
             headers: {
                 'Authorization': `Bearer ${token}`

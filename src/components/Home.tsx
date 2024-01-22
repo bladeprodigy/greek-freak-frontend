@@ -8,12 +8,12 @@ const Home = () => {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center',
                 height: '100vh',
-                width: '100vw', // Use '100vw' for full viewport width
+                width: '100vw',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: 0, // Remove margin
-                padding: 0, // Remove padding
+                margin: 0,
+                padding: 0,
             }}
         >
             <Typography
@@ -21,13 +21,13 @@ const Home = () => {
                 sx={{
                     color: 'secondary',
                     fontFamily: '"GFS Neohellenic", serif',
-                    fontWeight: 'bold', // Makes the font bolder
-                    textShadow: '3px 3px 10px rgba(0, 0, 0, 0.8)', // More pronounced text shadow
-                    fontSize: '4rem', // Larger font size for desktop
+                    fontWeight: 'bold',
+                    textShadow: '3px 3px 10px rgba(0, 0, 0, 0.8)',
+                    fontSize: '4rem',
                     '@media (max-width:600px)': {
-                        fontSize: '2rem', // Smaller font size for mobile devices
+                        fontSize: '2rem',
                     },
-                    WebkitTextStroke: '1px black', // Outline effect for better readability
+                    WebkitTextStroke: '1px black',
                 }}
             >
                 Greek Freak

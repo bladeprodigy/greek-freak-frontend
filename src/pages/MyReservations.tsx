@@ -18,7 +18,6 @@ interface Sitting {
 const MyReservations = (): React.ReactElement => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [availableSittings, setAvailableSittings] = useState<Sitting[]>([]);
-    const [selectedSittingId, setSelectedSittingId] = useState<number | null>(null);
     const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
     const [reservationTime, setReservationTime] = useState('');
     const [numberOfGuests, setNumberOfGuests] = useState(0);
@@ -65,12 +64,7 @@ const MyReservations = (): React.ReactElement => {
         setAvailableSittings(data);
     };
 
-    const createReservation = async (reservationTime: string, numberOfGuests: number) => {
-        if (!selectedSittingId) {
-            console.error('No sitting selected.');
-            return;
-        }
-
+    const createReservation = async (reservationTime: string, numberOfGuests: number, selectedSittingId: number) => {
         const token = localStorage.getItem('jwtToken');
         if (!token) {
             console.error('No token found.');
@@ -86,7 +80,6 @@ const MyReservations = (): React.ReactElement => {
             body: JSON.stringify({ selectedSittingId, reservationTime, numberOfGuests }),
         });
 
-        // Fetch reservations again to update the list
         fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -107,12 +100,10 @@ const MyReservations = (): React.ReactElement => {
             method: 'DELETE',
         });
 
-        // Fetch reservations again to update the list
         fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations')
             .then(response => response.json())
             .then(data => setReservations(data));
 
-        // Close the modal
         setSelectedReservation(null);
     };
 
@@ -154,7 +145,7 @@ const MyReservations = (): React.ReactElement => {
                                 <Typography variant="h6" gutterBottom>Available Sitting</Typography>
                                 <Typography variant="body1">{`Capacity: ${sitting.capacity}`}</Typography>
                                 <Typography variant="body1">{`Is Outside: ${sitting.isOutside ? 'Yes' : 'No'}`}</Typography>
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => setSelectedSittingId(sitting.id)}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => createReservation('2024-01-22T00:50:24.630Z', 0, sitting.id)}>
                                     Select Sitting
                                 </Button>
                             </CardContent>
@@ -162,11 +153,6 @@ const MyReservations = (): React.ReactElement => {
                     </Grid>
                 ))}
             </Grid>
-            {selectedSittingId && (
-                <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={() => createReservation('2024-01-22T00:50:24.630Z', 0)}>
-                    Confirm Reservation
-                </Button>
-            )}
             {reservations.length > 0 ? (
                 reservations.map((reservation) => (
                     <Box key={reservation.id} sx={{ mb: 2 }}>

@@ -6,7 +6,7 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-    const isAuthenticated = localStorage.getItem('jwtToken') !== null; // Replace this with your actual authentication check
+    const isAuthenticated = localStorage.getItem('jwtToken') !== null;
     const location = useLocation();
 
     return isAuthenticated ? children : <Navigate to="/login" state={{ from: location }} replace />;

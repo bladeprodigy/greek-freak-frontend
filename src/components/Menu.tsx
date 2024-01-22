@@ -1,13 +1,10 @@
 import {Container, Grid, Typography} from "@mui/material";
 import React from "react";
 
-// Define types for TypeScript (if using TypeScript)
 interface MenuSectionProps {
     title: string;
     items: string[];
 }
-
-// A reusable component for each menu section
 const MenuSection: React.FC<MenuSectionProps> = ({ title, items }) => {
     return (
         <>
@@ -36,15 +33,15 @@ const Menu = () => {
                 fontWeight: 'bold',
                 position: 'absolute',
                 left: '50%',
-                top: '20px', // Adjust top position as needed
+                top: '20px',
                 transform: 'translateX(-50%)',
                 width: '100%',
-                maxWidth: 'calc(100% - 64px)', // Consider container's padding
+                maxWidth: 'calc(100% - 64px)',
             }}>
                 Menu
             </Typography>
 
-            <Grid container spacing={2} justifyContent="center" sx={{ mt: 12 }}> {/* Adjust marginTop as needed */}
+            <Grid container spacing={2} justifyContent="center" sx={{ mt: 12 }}>
                 <Grid item xs={12} sm={6}>
                     <MenuSection title="Starters" items={starters} />
                     <MenuSection title="Main Dishes" items={mainDishes} />
