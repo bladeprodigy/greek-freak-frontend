@@ -92,7 +92,7 @@ const RegisterAndLogin = (): React.ReactElement => {
             const response = await fetch('https://greek-freak-restaurant.azurewebsites.net/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ firstName, lastName, email, phoneNumber, password }),
+                body: JSON.stringify({ firstName, lastName, email, phoneNumber, password, confirmPassword }),
             });
 
             if (!response.ok) {
