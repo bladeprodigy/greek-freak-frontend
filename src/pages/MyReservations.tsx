@@ -101,21 +101,42 @@ const MyReservations = (): React.ReactElement => {
     };
 
     const fetchReservationDetails = async (reservationId: string) => {
-        const response = await fetch(`https://greek-freak-restaurant.azurewebsites.net/reservations/${reservationId}`);
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            console.error('No token found.');
+            return;
+        }
+
+        const response = await fetch(`https://greek-freak-restaurant.azurewebsites.net/reservations/${reservationId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         const data = await response.json();
         setSelectedReservation(data);
     };
 
     const deleteReservation = async (reservationId: string) => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            console.error('No token found.');
+            return;
+        }
+
         await fetch(`https://greek-freak-restaurant.azurewebsites.net/reservations/${reservationId}`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
         });
 
-        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations')
+        fetch('https://greek-freak-restaurant.azurewebsites.net/reservations/my-reservations', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(response => response.json())
             .then(data => setReservations(data));
-
-        setSelectedReservation(null);
     };
 
     return (
@@ -169,8 +190,6 @@ const MyReservations = (): React.ReactElement => {
                         <Grid item xs={12} md={6} key={reservation.reservationId}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                 <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h6" gutterBottom>Reservation ID: {reservation.reservationId}</Typography>
-                                    <Typography variant="body1">Sitting ID: {reservation.sittingId}</Typography>
                                     <Typography variant="body1">Reservation Time: {new Date(reservation.reservationTime).toLocaleString()}</Typography>
                                     <Typography variant="body1">Number of Guests: {reservation.numberOfGuests}</Typography>
                                 </CardContent>
