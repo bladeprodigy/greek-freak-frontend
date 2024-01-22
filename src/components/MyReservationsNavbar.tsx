@@ -1,4 +1,4 @@
-import { Button, Box } from '@mui/material';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const MyReservationsNavbar = () => {
@@ -14,14 +14,21 @@ const MyReservationsNavbar = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: 2 }}>
-            <Button variant="contained" color="primary" onClick={handleMyAccountClick}>
-                My Account
-            </Button>
-            <Button variant="contained" color="secondary" onClick={handleLogoutClick} sx={{ ml: 2 }}>
-                Logout
-            </Button>
-        </Box>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    My Reservations
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button color="inherit" onClick={handleMyAccountClick}>
+                        My Account
+                    </Button>
+                    <Button color="inherit" onClick={handleLogoutClick}>
+                        Logout
+                    </Button>
+                </Box>
+            </Toolbar>
+        </AppBar>
     );
 };
 

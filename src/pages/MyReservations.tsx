@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Box, Button, Container, Modal, Typography} from '@mui/material';
+import {Box, Button, Card, CardContent, Container, Grid, Modal, TextField, Typography} from '@mui/material';
 import MyReservationsNavbar from "../components/MyReservationsNavbar.tsx";
 
 interface Reservation {
@@ -20,6 +20,8 @@ const MyReservations = (): React.ReactElement => {
     const [availableSittings, setAvailableSittings] = useState<Sitting[]>([]);
     const [selectedSittingId, setSelectedSittingId] = useState<number | null>(null);
     const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+    const [reservationTime, setReservationTime] = useState('');
+    const [numberOfGuests, setNumberOfGuests] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
@@ -104,14 +106,48 @@ const MyReservations = (): React.ReactElement => {
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
             <MyReservationsNavbar />
-            <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={() => fetchAvailableSittings('2024-01-24T13:39:50.392Z', 3)}>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} md={6}>
+                    <TextField
+                        label="Reservation Time"
+                        type="datetime-local"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
+                        value={reservationTime}
+                        onChange={e => setReservationTime(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <TextField
+                        label="Number of Guests"
+                        type="number"
+                        fullWidth
+                        value={numberOfGuests}
+                        onChange={e => setNumberOfGuests(parseInt(e.target.value))}
+                    />
+                </Grid>
+            </Grid>
+            <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={() => fetchAvailableSittings(reservationTime, numberOfGuests)}>
                 Create Reservation
             </Button>
-            {availableSittings.map((sitting) => (
-                <Button key={sitting.id} variant="outlined" color="primary" sx={{ mb: 2 }} onClick={() => setSelectedSittingId(sitting.id)}>
-                    Select Sitting
-                </Button>
-            ))}
+            <Grid container spacing={2}>
+                {availableSittings.map((sitting) => (
+                    <Grid item xs={12} md={6} key={sitting.id}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>Available Sitting</Typography>
+                                <Typography variant="body1">{`Capacity: ${sitting.capacity}`}</Typography>
+                                <Typography variant="body1">{`Is Outside: ${sitting.isOutside ? 'Yes' : 'No'}`}</Typography>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => setSelectedSittingId(sitting.id)}>
+                                    Select Sitting
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
             {selectedSittingId && (
                 <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={() => createReservation('2024-01-22T00:50:24.630Z', 0)}>
                     Confirm Reservation

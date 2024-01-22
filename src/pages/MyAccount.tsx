@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, TextField, Typography} from '@mui/material';
+import {Button, Card, CardContent, Container, TextField, Typography} from '@mui/material';
 
 interface AccountFields {
     firstName: string;
@@ -65,11 +65,15 @@ const MyAccount = (): React.ReactElement => {
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h4" sx={{ mb: 2 }}>My Account</Typography>
-            <TextField label="First Name" variant="outlined" fullWidth name="firstName" value={accountFields.firstName} onChange={handleAccountChange} sx={{ mb: 2 }} />
-            <TextField label="Last Name" variant="outlined" fullWidth name="lastName" value={accountFields.lastName} onChange={handleAccountChange} sx={{ mb: 2 }} />
-            <TextField label="Email" variant="outlined" fullWidth name="email" value={accountFields.email} onChange={handleAccountChange} sx={{ mb: 2 }} />
-            <TextField label="Phone Number" variant="outlined" fullWidth name="phoneNumber" value={accountFields.phoneNumber} onChange={handleAccountChange} sx={{ mb: 2 }} />
-            <Button variant="contained" color="primary" onClick={updateAccount}>Update Account</Button>
+            <Card>
+                <CardContent>
+                    <TextField label="First Name" variant="outlined" fullWidth name="firstName" value={accountFields.firstName} onChange={handleAccountChange} sx={{ mb: 2 }} />
+                    <TextField label="Last Name" variant="outlined" fullWidth name="lastName" value={accountFields.lastName} onChange={handleAccountChange} sx={{ mb: 2 }} />
+                    <TextField label="Email" variant="outlined" fullWidth name="email" value={accountFields.email} onChange={handleAccountChange} sx={{ mb: 2 }} />
+                    <TextField label="Phone Number" variant="outlined" fullWidth name="phoneNumber" value={accountFields.phoneNumber} onChange={handleAccountChange} sx={{ mb: 2 }} />
+                    <Button variant="contained" color="primary" onClick={updateAccount}>Update Account</Button>
+                </CardContent>
+            </Card>
         </Container>
     );
 };
