@@ -44,9 +44,18 @@ const MyReservations = (): React.ReactElement => {
     }, []);
 
     const fetchAvailableSittings = async (reservationTime: string, numberOfGuests: number) => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            console.error('No token found.');
+            return;
+        }
+
         const response = await fetch('https://greek-freak-restaurant.azurewebsites.net/sittings/available', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ reservationTime, numberOfGuests }),
         });
 

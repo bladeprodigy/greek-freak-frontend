@@ -5,6 +5,7 @@ import MainPage from './pages/MainPage';
 import MyReservations from './pages/MyReservations';
 import PrivateRoute from './components/PrivateRoute';
 import RegisterAndLogin from './pages/RegisterAndLogin';
+import MyAccount from "./pages/MyAccount.tsx";
 
 const App = () => {
     return (
@@ -15,6 +16,11 @@ const App = () => {
                     <Route path="/my-reservations" element={
                         <PrivateRoute>
                             <MyReservations />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/my-account" element={
+                        <PrivateRoute>
+                            <MyAccount />
                         </PrivateRoute>
                     } />
                     <Route path="/login" element={<RegisterAndLogin />} />
