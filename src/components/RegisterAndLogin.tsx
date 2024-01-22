@@ -44,73 +44,63 @@ const RegisterAndLogin = (): React.ReactElement => {
         setRegisterErrors({});
     };
 
-    const handleLoginSubmit = async (): Promise<void> => {
+    const handleLoginSubmit = async (event: React.FormEvent): Promise<void> => {
+        event.preventDefault();
+        const { email, password } = loginFields;
+
+        if (!email || !password) {
+            setLoginError('Email and password are required.');
+            return;
+        }
+
         try {
             const response = await fetch('https://greekfreak.azurewebsites.net/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: loginFields.email,
-                    password: loginFields.password,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('jwtToken', data.token);
-                navigate('#home');
-            } else {
-                if (response.headers.get('content-type')?.includes('application/json')) {
-                    const errorData = await response.json();
-                    console.error('Login failed:', errorData);
-                }
-                setLoginError('Invalid email or password.');
+            if (!response.ok) {
+                new Error('Invalid email or password.');
             }
+
+            const data = await response.json();
+            localStorage.setItem('jwtToken', data.token);
+            navigate('/my-reservations'); // Redirect to my-reservations page after successful login
         } catch (error) {
             console.error('Login error:', error);
             setLoginError('An error occurred while trying to log in.');
         }
     };
 
+    const handleRegisterSubmit = async (event: React.FormEvent): Promise<void> => {
+        event.preventDefault();
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword } = registerFields;
 
-    const handleRegisterSubmit = async (): Promise<void> => {
-        setRegisterErrors({});
-
-        if (registerFields.password !== registerFields.confirmPassword) {
+        if (password !== confirmPassword) {
             setRegisterErrors({ confirmPassword: ["Passwords do not match"] });
+            return;
+        }
+
+        if (!firstName || !lastName || !email || !phoneNumber || !password) {
+            setRegisterErrors({ general: ["All fields are required."] });
             return;
         }
 
         try {
             const response = await fetch('https://greekfreak.azurewebsites.net/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    firstName: registerFields.firstName,
-                    lastName: registerFields.lastName,
-                    email: registerFields.email,
-                    phoneNumber: registerFields.phoneNumber,
-                    password: registerFields.password,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, email, phoneNumber, password }),
             });
 
             if (!response.ok) {
-                if (response.headers.get('content-type')?.includes('application/json')) {
-                    const errorData = await response.json();
-                    // Handle JSON error message here, if any
-                    setRegisterErrors(errorData.errors || {});
-                } else {
-                    setRegisterErrors({ general: ["An error occurred during registration."] });
-                }
-            } else {
-                const data = await response.json();
-                console.log('Registration successful:', data);
-                navigate('#login');
+                new Error('An error occurred during registration.');
             }
+
+            const data = await response.json();
+            console.log('Registration successful:', data);
+            navigate('#login');
         } catch (error) {
             console.error('Registration error:', error);
             setRegisterErrors({ general: ["An error occurred during registration."] });
